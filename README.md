@@ -15,9 +15,9 @@ automation in my Gradle monorepo projects.
 
 ## Available plugins
 
-| Module| Plugin ID| Description|
-| :---| :---| :---|
-| `esp-idf-plugin` | `pl.miloszgilga.gradle.espidf` | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). |
+| Module | Plugin ID | Description | Docs | Repository |
+| :--- | :--- | :--- | :--- | :--- |
+| `esp-idf-plugin` | `pl.miloszgilga.gradle.espidf` | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/esp-idf-plugin/latest) | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/esp-idf-plugin) |
 
 ## Usage
 
