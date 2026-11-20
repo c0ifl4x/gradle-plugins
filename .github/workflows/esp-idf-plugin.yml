@@ -1,0 +1,35 @@
+name: Publish esp-idf-plugin
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'esp-idf-plugin/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
+      - '.github/workflows/esp-idf-plugin.yml'
+      - '.github/workflows/_reusable-plugin-ci.yml'
+    tags:
+      - 'esp-idf-v*'
+  pull_request:
+    branches:
+      - 'master'
+    paths:
+      - 'esp-idf-plugin/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
+      - '.github/workflows/esp-idf-plugin.yml'
+      - '.github/workflows/_reusable-plugin-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/_reusable-plugin-ci.yml
+    with:
+      module: esp-idf-plugin
+    secrets: inherit
