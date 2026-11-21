@@ -56,7 +56,7 @@ plugins {
 }
 
 espIdf {
-  chip.set("esp32c3") // default: "esp32c3"
+  chip.set("esp32c3") // default: "esp32"
   port.set("/dev/ttyACM0") // default: OS-specific serial port (COM3, /dev/ttyACM0, /dev/cu.usbmodem101)
   baud.set("921600") // default: "921600"
   appVersion.set("1.0.0") // default: project.version (or "0.0.1-local-dev" if unspecified)
