@@ -33,6 +33,14 @@ class EspIdfPlugin : Plugin<Project> {
       taskDescription = "Sets the compilation target to esp32c3",
       commandProvider = ext.chip.map { targetChip -> "idf.py set-target $targetChip" }
     )
+    registerIdfTask(
+      project,
+      ext,
+      taskName = "menuconfig",
+      taskDescription = "Opens the interactive ESP-IDF project configuration menu (TUI)",
+      commandProvider = project.provider { "idf.py menuconfig" },
+      interactive = true
+    )
     val buildFirmware = registerIdfTask(
       project,
       ext,
@@ -84,6 +92,24 @@ class EspIdfPlugin : Plugin<Project> {
       commandProvider = ext.port.zip(ext.baud) { port, baud -> "idf.py -p $port -b $baud app-flash" }
     ).apply {
       configure { dependsOn(buildAppOnly) }
+    }
+    registerIdfTask(
+      project,
+      ext,
+      taskName = "monitorFirmware",
+      taskDescription = "Opens the serial monitor with address-to-line backtrace decoding",
+      commandProvider = ext.port.map { port -> "idf.py -p $port monitor" },
+      interactive = true
+    )
+    registerIdfTask(
+      project,
+      ext,
+      taskName = "runFirmware",
+      taskDescription = "Builds, flashes the full firmware, and immediately starts the serial monitor",
+      commandProvider = ext.port.zip(ext.baud) { port, baud -> "idf.py -p $port -b $baud flash monitor" },
+      interactive = true
+    ).apply {
+      configure { dependsOn(buildFirmware) }
     }
     registerIdfTask(
       project,
@@ -148,11 +174,15 @@ class EspIdfPlugin : Plugin<Project> {
     taskDescription: String,
     commandProvider: Provider<String>,
     useIdfEnv: Boolean = true,
+    interactive: Boolean = false,
     extraEnv: Map<String, Provider<String>> = emptyMap()
   ) = project.tasks.register<Exec>(taskName) {
     group = "firmware"
     description = taskDescription
     workingDir = project.projectDir
+    if (interactive) {
+      standardInput = System.`in`
+    }
     extraEnv.forEach { (key, valueProvider) ->
       environment(key, valueProvider.get())
     }
