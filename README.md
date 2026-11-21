@@ -65,18 +65,20 @@ espIdf {
 
 #### Available tasks (`firmware` group)
 
-| Task| Description|
-| :--- | :--- |
-| `checkEnv`| Verifies that the ESP-IDF environment and `idf.py` are properly configured. |
-| `setChip`| Sets the compilation target chip (e.g., `esp32c3`, `esp32s3`, `esp32`). |
-| `buildFirmware`| Builds the full firmware (bootloader, partition table, and application). |
-| `buildAppOnly`| Builds only the application binary (skips bootloader and partition images). |
-| `rebuildFirmware`| Forces CMake reconfiguration and performs a full firmware rebuild. |
-| `flashFirmware`| Builds and flashes the full firmware to the board. |
-| `flashAppOnly`| Builds and flashes only the application partition to the board. |
-| `eraseFlash`| Erases the entire flash memory on the chip (including NVS and other partitions). |
-| `cleanFirmware`| Cleans build output files (`idf.py fullclean`). |
-| `generateDocs`| Generates project documentation using Doxygen. |
+| Task              | Description                                                                      |
+|:------------------|:---------------------------------------------------------------------------------|
+| `checkEnv`        | Verifies that the ESP-IDF environment and `idf.py` are properly configured.      |
+| `setChip`         | Sets the compilation target chip (e.g., `esp32c3`, `esp32s3`, `esp32`).          |
+| `buildFirmware`   | Builds the full firmware (bootloader, partition table, and application).         |
+| `buildAppOnly`    | Builds only the application binary (skips bootloader and partition images).      |
+| `rebuildFirmware` | Forces CMake reconfiguration and performs a full firmware rebuild.               |
+| `flashFirmware`   | Builds and flashes the full firmware to the board.                               |
+| `flashAppOnly`    | Builds and flashes only the application partition to the board.                  |
+| `monitorFirmware` | Opens the serial monitor with address-to-line backtrace decoding.                |
+| `runFirmware`     | Builds, flashes the full firmware, and immediately starts the serial monitor.    |
+| `eraseFlash`      | Erases the entire flash memory on the chip (including NVS and other partitions). |
+| `cleanFirmware`   | Cleans build output files (`idf.py fullclean`).                                  |
+| `generateDocs`    | Generates project documentation using Doxygen.                                   |
 
 ## Contributing
 
