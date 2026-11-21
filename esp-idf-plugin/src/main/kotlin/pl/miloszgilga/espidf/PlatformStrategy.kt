@@ -5,15 +5,22 @@ import java.io.File
 internal interface PlatformStrategy {
   val defaultPort: String
   val defaultIdfPath: String
-  fun wrapCommand(command: String, useIdfEnv: Boolean, idfPath: String): List<String>
+  fun wrapCommand(command: String, useIdfEnv: Boolean, idfPath: String, interactive: Boolean = false): List<String>
 }
 
 internal class WindowsStrategy : PlatformStrategy {
   override val defaultPort = "COM3"
   override val defaultIdfPath = "C:\\Espressif\\frameworks\\esp-idf"
 
-  override fun wrapCommand(command: String, useIdfEnv: Boolean, idfPath: String): List<String> {
+  override fun wrapCommand(
+    command: String,
+    useIdfEnv: Boolean,
+    idfPath: String,
+    interactive: Boolean
+  ): List<String> {
     val exportBat = File(idfPath, "export.bat").absolutePath
+    val finalCommand = if (interactive) "$command < CON" else command
+
     val script = if (useIdfEnv) {
       """
       where idf.py >nul 2>nul || (
@@ -24,10 +31,10 @@ internal class WindowsStrategy : PlatformStrategy {
           exit /b 1
         )
       )
-      $command
+      $finalCommand
       """.trimIndent().replace("\n", " & ")
     } else {
-      command
+      finalCommand
     }
     return listOf("cmd", "/c", script)
   }
@@ -36,8 +43,27 @@ internal class WindowsStrategy : PlatformStrategy {
 internal abstract class UnixStrategy : PlatformStrategy {
   override val defaultIdfPath = "${System.getProperty("user.home")}/esp/esp-idf"
 
-  override fun wrapCommand(command: String, useIdfEnv: Boolean, idfPath: String): List<String> {
+  protected abstract fun wrapWithPtyFallback(escapedCommand: String): String
+
+  override fun wrapCommand(
+    command: String,
+    useIdfEnv: Boolean,
+    idfPath: String,
+    interactive: Boolean
+  ): List<String> {
     val exportSh = File(idfPath, "export.sh").absolutePath
+    val finalCommand = if (interactive) {
+      val escaped = command.replace("\"", "\\\"")
+      """
+      if (: < /dev/tty) 2>/dev/null; then
+        $command < /dev/tty
+      else
+        ${wrapWithPtyFallback(escaped)}
+      fi
+      """.trimIndent()
+    } else {
+      command
+    }
     val script = if (useIdfEnv) {
       """
       if ! command -v idf.py >/dev/null 2>&1; then
@@ -48,10 +74,10 @@ internal abstract class UnixStrategy : PlatformStrategy {
           exit 1
         fi
       fi
-      $command
+      $finalCommand
       """.trimIndent()
     } else {
-      command
+      finalCommand
     }
     return listOf("bash", "-c", script)
   }
@@ -59,10 +85,16 @@ internal abstract class UnixStrategy : PlatformStrategy {
 
 internal class MacOsStrategy : UnixStrategy() {
   override val defaultPort = "/dev/cu.usbmodem101"
+
+  override fun wrapWithPtyFallback(escapedCommand: String): String =
+    "script -q /dev/null bash -c \"$escapedCommand\""
 }
 
 internal class LinuxStrategy : UnixStrategy() {
   override val defaultPort = "/dev/ttyACM0"
+
+  override fun wrapWithPtyFallback(escapedCommand: String): String =
+    "script -q -c \"$escapedCommand\" /dev/null"
 }
 
 internal object PlatformStrategyFactory {

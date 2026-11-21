@@ -172,9 +172,6 @@ class EspIdfPlugin : Plugin<Project> {
     group = "firmware"
     description = taskDescription
     workingDir = project.projectDir
-    if (interactive) {
-      standardInput = System.`in`
-    }
     extraEnv.forEach { (key, valueProvider) ->
       environment(key, valueProvider.get())
     }
@@ -183,7 +180,8 @@ class EspIdfPlugin : Plugin<Project> {
         ext.platform.wrapCommand(
           command = commandProvider.get(),
           useIdfEnv = useIdfEnv,
-          idfPath = ext.idfPath.get()
+          idfPath = ext.idfPath.get(),
+          interactive = interactive
         )
       )
     }
