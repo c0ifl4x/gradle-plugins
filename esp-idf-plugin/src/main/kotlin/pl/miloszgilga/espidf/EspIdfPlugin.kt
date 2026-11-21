@@ -33,14 +33,6 @@ class EspIdfPlugin : Plugin<Project> {
       taskDescription = "Sets the compilation target to esp32c3",
       commandProvider = ext.chip.map { targetChip -> "idf.py set-target $targetChip" }
     )
-    registerIdfTask(
-      project,
-      ext,
-      taskName = "menuconfig",
-      taskDescription = "Opens the interactive ESP-IDF project configuration menu (TUI)",
-      commandProvider = project.provider { "idf.py menuconfig" },
-      interactive = true
-    )
     val buildFirmware = registerIdfTask(
       project,
       ext,
