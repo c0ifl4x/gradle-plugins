@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class EspIdfPluginTest {
-
   @Test
   fun `plugin registers all expected firmware tasks and default conventions`() {
     // given

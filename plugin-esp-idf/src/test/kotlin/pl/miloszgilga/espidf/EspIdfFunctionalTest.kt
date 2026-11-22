@@ -12,12 +12,8 @@ import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class EspIdfFunctionalTest {
-
-  @TempDir
-  lateinit var testProjectDir: File
-
-  @TempDir
-  lateinit var mockBinDir: File
+  @TempDir lateinit var testProjectDir: File
+  @TempDir lateinit var mockBinDir: File
 
   private lateinit var customEnv: MutableMap<String, String>
 

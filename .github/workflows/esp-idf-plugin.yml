@@ -5,7 +5,7 @@ on:
     branches:
       - 'master'
     paths:
-      - 'esp-idf-plugin/**'
+      - 'plugin-esp-idf/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'gradle.properties'
@@ -18,7 +18,7 @@ on:
     branches:
       - 'master'
     paths:
-      - 'esp-idf-plugin/**'
+      - 'plugin-esp-idf/**'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
       - 'gradle.properties'
@@ -31,5 +31,5 @@ jobs:
   ci:
     uses: ./.github/workflows/_reusable-plugin-ci.yml
     with:
-      module: esp-idf-plugin
+      module: plugin-esp-idf
     secrets: inherit

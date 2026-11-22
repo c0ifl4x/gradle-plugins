@@ -7,6 +7,4 @@ dependencyResolutionManagement {
   }
 }
 
-include(
-  "esp-idf-plugin"
-)
+include("plugin-esp-idf")
