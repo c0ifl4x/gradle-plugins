@@ -13,6 +13,9 @@ import org.gradle.kotlin.dsl.register
  *
  * Registers the `espIdf` extension, lifecycle tasks under the `firmware` group, and exports the built binary via the
  * `firmwareBinary` consumable configuration.
+ *
+ * @author Miłosz Gilga
+ * @since 1.0.0
  */
 class EspIdfPlugin : Plugin<Project> {
   override fun apply(project: Project) {

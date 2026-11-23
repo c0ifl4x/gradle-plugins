@@ -8,6 +8,9 @@ import javax.inject.Inject
  * Configuration extension for the ESP-IDF Gradle plugin (`espIdf { ... }`).
  *
  * Provides cross-platform defaults and properties for building, flashing, and documenting ESP32 firmware projects.
+ *
+ * @author Miłosz Gilga
+ * @since 1.0.0
  */
 abstract class EspIdfExtension @Inject constructor(project: Project) {
   /**
