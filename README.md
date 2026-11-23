@@ -8,7 +8,7 @@ automation in my Gradle monorepo projects.
 - [Available plugins](#available-plugins)
 - [Usage](#usage)
   - [Add plugins repository](#add-plugins-repository)
-  - [Usage of `esp-idf-plugin`](#usage-of-esp-idf-plugin)
+  - [Usage of `plugin-esp-idf`](#usage-of-plugin-esp-idf)
 - [Contributing](#contributing)
 - [Author](#author)
 - [License](#license)
@@ -17,7 +17,7 @@ automation in my Gradle monorepo projects.
 
 | Module | Plugin ID | Description | Docs | Repository |
 | :--- | :--- | :--- | :--- | :--- |
-| `esp-idf-plugin` | `pl.miloszgilga.gradle.espidf` | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/esp-idf-plugin/latest) | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/esp-idf-plugin) |
+| `plugin-esp-idf` | `pl.miloszgilga.gradle.espidf` | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-esp-idf/latest) | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-esp-idf) |
 
 ## Usage
 
@@ -40,7 +40,7 @@ pluginManagement {
 }
 ```
 
-### Usage of `esp-idf-plugin`
+### Usage of `plugin-esp-idf`
 
 > [!NOTE]
 > To use this plugin, you must still have the **ESP-IDF** framework installed and configured on your system. This plugin
