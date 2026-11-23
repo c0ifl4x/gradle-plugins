@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 rootProject.name = "gradle-plugins"
 
 dependencyResolutionManagement {
@@ -8,3 +10,4 @@ dependencyResolutionManagement {
 }
 
 include("plugin-esp-idf")
+include("plugin-webembed")
