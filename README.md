@@ -100,7 +100,7 @@ dependencies {
 }
 ```
 
-> [!TIP]
+> [!NOTE]
 > When using `usbipdAutoAttach`, note that Windows does not include `usbipd` out of the box - install
 > [usbipd-win](https://github.com/dorssel/usbipd-win) on the Windows host
 > (`winget install --interactive --exact dorssel.usbipd-win`). When `usbipdAutoAttach` is enabled, serial tasks
