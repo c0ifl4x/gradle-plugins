@@ -1,9 +1,9 @@
 package pl.miloszgilga.espidf
 
+import org.gradle.api.attributes.Category
 import org.gradle.api.tasks.Exec
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class EspIdfPluginTest {
@@ -37,6 +37,11 @@ class EspIdfPluginTest {
     assertEquals("esp32", ext.chip.get())
     assertEquals("921600", ext.baud.get())
     assertEquals("${project.name}.bin", ext.binaryName.get())
+
+    val incomingConfig = project.configurations.findByName(EspComponentsContract.CONFIGURATION_NAME)
+    assertNotNull(incomingConfig)
+    assertFalse(incomingConfig!!.isCanBeConsumed)
+    assertTrue(incomingConfig.isCanBeResolved)
   }
 
   @Test
@@ -55,6 +60,26 @@ class EspIdfPluginTest {
     assertEquals("firmware", setChipTask.group)
     assertEquals("esp32s3", ext.chip.get())
     assertEquals("/dev/ttyUSB9", ext.port.get())
+  }
+
+  @Test
+  fun `components plugin registers consumable configuration and exports project directory`() {
+    // given
+    val project = ProjectBuilder.builder().withName("common-components").build()
+
+    // when
+    project.pluginManager.apply("pl.miloszgilga.gradle.esp-idf-components")
+
+    // then
+    val outgoingConfig = project.configurations.findByName(EspComponentsContract.CONFIGURATION_NAME)
+    assertNotNull(outgoingConfig)
+    assertTrue(outgoingConfig!!.isCanBeConsumed)
+    assertFalse(outgoingConfig.isCanBeResolved)
+    assertEquals(
+      "esp-idf-components",
+      outgoingConfig.attributes.getAttribute(Category.CATEGORY_ATTRIBUTE)?.name
+    )
+    assertTrue(outgoingConfig.artifacts.files.contains(project.projectDir))
   }
 
   @Test
