@@ -3,7 +3,7 @@ plugins {
   `maven-publish`
 }
 
-version = "3.2.0"
+version = "3.2.1"
 
 gradlePlugin {
   website.set("https://github.com/c0ifl4x/gradle-plugins")

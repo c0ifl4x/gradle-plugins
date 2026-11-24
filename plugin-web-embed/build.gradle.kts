@@ -3,7 +3,7 @@ plugins {
   `maven-publish`
 }
 
-version = "1.0.1"
+version = "1.0.2"
 
 dependencies {
   implementation(libs.node.gradle.plugin)
