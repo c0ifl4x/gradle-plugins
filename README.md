@@ -9,7 +9,7 @@ automation in my Gradle monorepo projects.
 - [Usage](#usage)
     - [Add plugins repository](#add-plugins-repository)
     - [Usage of `plugin-esp-idf`](#usage-of-plugin-esp-idf)
-    - [Usage of `plugin-webembed`](#usage-of-plugin-web-embed)
+    - [Usage of `plugin-web-embed`](#usage-of-plugin-web-embed)
 - [Contributing](#contributing)
 - [Author](#author)
 - [License](#license)
