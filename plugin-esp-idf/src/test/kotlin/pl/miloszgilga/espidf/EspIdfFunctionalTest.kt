@@ -179,4 +179,24 @@ class EspIdfFunctionalTest {
     // then - cache is invalidated and firmware rebuilds
     assertEquals(TaskOutcome.SUCCESS, thirdRun.task(":app:buildFirmware")?.outcome)
   }
+
+  @Test
+  @DisabledOnOs(OS.WINDOWS)
+  fun `flashFirmware skips attachUsbWsl when autoAttach is disabled`() {
+    // given
+    val runner = GradleRunner.create()
+      .withProjectDir(testProjectDir)
+      .withPluginClasspath()
+      .withEnvironment(customEnv)
+      .withArguments("flashFirmware", "--configuration-cache")
+
+    // when
+    val result = runner.build()
+
+    // then
+    assertEquals(TaskOutcome.SKIPPED, result.task(":attachUsbWsl")?.outcome)
+    assertEquals(TaskOutcome.SUCCESS, result.task(":buildFirmware")?.outcome)
+    assertEquals(TaskOutcome.SUCCESS, result.task(":flashFirmware")?.outcome)
+    assertTrue(result.output.contains("MOCK_IDF_CALLED_WITH: -p /dev/ttyACM0 -b 921600 flash"))
+  }
 }

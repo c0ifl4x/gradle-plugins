@@ -85,6 +85,28 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    */
   abstract val extraComponentDirs: ConfigurableFileCollection
 
+  /**
+   * Automatically binds (via UAC prompt if needed) and attaches a matching USB-to-Serial / JTAG device from Windows to
+   * WSL2 using `usbipd.exe` before running serial tasks (`flashFirmware`, `flashAppOnly`, `monitorFirmware`,
+   * `runFirmware`, `eraseFlash`).
+   *
+   * Has no effect outside WSL2. Defaults to `false`.
+   *
+   * @since 3.2.0
+   */
+  abstract val usbipdAutoAttach: Property<Boolean>
+
+  /**
+   * Regular expression used to match the target USB device line in `usbipd.exe list` output (matched against `VID:PID`
+   * and device description).
+   *
+   * Defaults to common ESP32 USB-JTAG and USB-UART bridges (Espressif `303a:`, CP210x `10c4:ea60`, CH340/CH9102
+   * `1a86:`, FTDI `0403:`).
+   *
+   * @since 3.2.0
+   */
+  abstract val usbipdDevicePattern: Property<String>
+
   internal val platform = PlatformStrategyFactory.detect()
 
   init {
@@ -96,5 +118,7 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
       project.version.toString().takeIf { it != "unspecified" } ?: "0.0.1-local-dev"
     )
     binaryName.convention("${project.name}.bin")
+    usbipdAutoAttach.convention(false)
+    usbipdDevicePattern.convention("(303a:|10c4:ea60|1a86:|0403:|USB JTAG|CP210|CH340|CH9102)")
   }
 }

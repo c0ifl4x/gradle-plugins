@@ -16,6 +16,7 @@ internal enum class FirmwareTaskSpec(
   val description: String,
   val useIdfEnv: Boolean = true,
   val interactive: Boolean = false,
+  val requiresSerial: Boolean = false,
   val dependency: FirmwareTaskSpec? = null
 ) {
   CHECK_ENV(
@@ -81,6 +82,7 @@ internal enum class FirmwareTaskSpec(
   FLASH_FIRMWARE(
     taskName = "flashFirmware",
     description = "Builds and flashes the full firmware to the board",
+    requiresSerial = true,
     dependency = BUILD_FIRMWARE
   ) {
     override fun command(ctx: TaskRuntimeContext): Provider<String> =
@@ -90,6 +92,7 @@ internal enum class FirmwareTaskSpec(
   FLASH_APP_ONLY(
     taskName = "flashAppOnly",
     description = "Builds and flashes only the application partition to the board",
+    requiresSerial = true,
     dependency = BUILD_APP_ONLY
   ) {
     override fun command(ctx: TaskRuntimeContext): Provider<String> =
@@ -99,7 +102,8 @@ internal enum class FirmwareTaskSpec(
   MONITOR_FIRMWARE(
     taskName = "monitorFirmware",
     description = "Opens the serial monitor with address-to-line backtrace decoding",
-    interactive = true
+    interactive = true,
+    requiresSerial = true
   ) {
     override fun command(ctx: TaskRuntimeContext): Provider<String> =
       ctx.ext.port.map { port -> "idf.py -p $port monitor" }
@@ -109,6 +113,7 @@ internal enum class FirmwareTaskSpec(
     taskName = "runFirmware",
     description = "Builds, flashes the full firmware, and immediately starts the serial monitor",
     interactive = true,
+    requiresSerial = true,
     dependency = BUILD_FIRMWARE
   ) {
     override fun command(ctx: TaskRuntimeContext): Provider<String> =
@@ -117,7 +122,8 @@ internal enum class FirmwareTaskSpec(
 
   ERASE_FLASH(
     taskName = "eraseFlash",
-    description = "Erases the entire flash memory on the chip (including NVS and other partitions)"
+    description = "Erases the entire flash memory on the chip (including NVS and other partitions)",
+    requiresSerial = true
   ) {
     override fun command(ctx: TaskRuntimeContext): Provider<String> =
       ctx.ext.port.map { port -> "idf.py -p $port erase-flash" }
@@ -140,7 +146,6 @@ internal enum class FirmwareTaskSpec(
       ctx.project.provider { "doxygen" }
 
     override fun configure(task: Exec, ctx: TaskRuntimeContext) {
-      task.environment("VER", ctx.ext.appVersion.get())
       task.inputs.files(ctx.project.fileTree(ctx.project.projectDir) {
         include(
           "main/**/*.c",
@@ -152,6 +157,9 @@ internal enum class FirmwareTaskSpec(
       })
       task.inputs.property("version", ctx.ext.appVersion)
       task.outputs.dir(ctx.project.layout.projectDirectory.dir("docs"))
+      task.doFirst {
+        task.environment("VER", ctx.ext.appVersion.get())
+      }
     }
   };
 

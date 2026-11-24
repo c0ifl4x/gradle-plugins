@@ -29,6 +29,18 @@ class EspIdfPlugin : Plugin<Project> {
     EspComponentsContract.applyAttributes(incomingComponents, project.objects)
     ext.extraComponentDirs.from(incomingComponents)
 
+    val attachUsbWsl = project.tasks.register("attachUsbWsl") {
+      group = "firmware"
+      description = "Binds and attaches a matching ESP32 USB device from Windows to WSL2 via usbipd.exe"
+      onlyIf { WslUsbAttacher.isWsl() && ext.usbipdAutoAttach.get() }
+      doLast {
+        WslUsbAttacher.attachMatchingDevice(
+          devicePattern = ext.usbipdDevicePattern.get(),
+          expectedPort = ext.port.get(),
+          logger = logger
+        )
+      }
+    }
     val ctx = TaskRuntimeContext(
       project = project,
       ext = ext,
@@ -56,9 +68,12 @@ class EspIdfPlugin : Plugin<Project> {
       }
     }
     FirmwareTaskSpec.entries.forEach { spec ->
-      spec.dependency?.let { dep ->
-        registeredTasks.getValue(spec).configure {
+      registeredTasks.getValue(spec).configure {
+        spec.dependency?.let { dep ->
           dependsOn(registeredTasks.getValue(dep))
+        }
+        if (spec.requiresSerial) {
+          dependsOn(attachUsbWsl)
         }
       }
     }
