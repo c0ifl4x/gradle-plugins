@@ -16,10 +16,10 @@ automation in my Gradle monorepo projects.
 
 ## Available plugins
 
-| Module            | Plugin ID                                                                    | Description                                                                          | Docs                                                                                               | Repository                                                                               |
-|:------------------|:-----------------------------------------------------------------------------|:-------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------|
-| `plugin-esp-idf`  | `pl.miloszgilga.gradle.espidf`                                               | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-esp-idf/latest)  | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-esp-idf)  |
-| `plugin-webembed` | `pl.miloszgilga.gradle.frontend-builder`<br>`pl.miloszgilga.gradle.webembed` | Builds frontend assets via Node/Yarn and embeds them into JVM server resources.      | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-webembed/latest) | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-webembed) |
+| Module            | Plugin ID                                                                     | Description                                                                          | Docs                                                                                               | Repository                                                                               |
+|:------------------|:------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------|
+| `plugin-esp-idf`  | `pl.miloszgilga.gradle.esp-idf`<br>`pl.miloszgilga.gradle.esp-idf-components` | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-esp-idf/latest)  | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-esp-idf)  |
+| `plugin-webembed` | `pl.miloszgilga.gradle.frontend-builder`<br>`pl.miloszgilga.gradle.web-embed` | Builds frontend assets via Node/Yarn and embeds them into JVM server resources.      | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-webembed/latest) | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-webembed) |
 
 ## Usage
 
@@ -82,7 +82,7 @@ Apply `pl.miloszgilga.gradle.esp-idf`, customize the `espIdf` extension, and lin
 
 ```kotlin
 plugins {
-  id("pl.miloszgilga.gradle.espidf") version "X.Y.Z"
+  id("pl.miloszgilga.gradle.esp-idf") version "X.Y.Z"
 }
 
 espIdf {
