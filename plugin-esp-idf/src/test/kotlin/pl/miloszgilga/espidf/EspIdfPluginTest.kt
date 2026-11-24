@@ -25,7 +25,7 @@ class EspIdfPluginTest {
     )
 
     // when
-    project.pluginManager.apply("pl.miloszgilga.gradle.espidf")
+    project.pluginManager.apply("pl.miloszgilga.gradle.esp-idf")
 
     // then
     expectedTasks.forEach { taskName ->
@@ -41,7 +41,7 @@ class EspIdfPluginTest {
   fun `extension overrides are reflected in task configuration`() {
     // given
     val project = ProjectBuilder.builder().build()
-    project.pluginManager.apply("pl.miloszgilga.gradle.espidf")
+    project.pluginManager.apply("pl.miloszgilga.gradle.esp-idf")
     val ext = project.extensions.getByType(EspIdfExtension::class.java)
 
     // when

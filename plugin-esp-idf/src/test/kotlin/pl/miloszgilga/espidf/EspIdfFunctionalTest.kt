@@ -39,7 +39,7 @@ class EspIdfFunctionalTest {
     File(testProjectDir, "build.gradle.kts").writeText(
       """
       plugins {
-        id("pl.miloszgilga.gradle.espidf")
+        id("pl.miloszgilga.gradle.esp-idf")
       }
       espIdf {
         chip.set("esp32s3")
