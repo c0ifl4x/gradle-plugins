@@ -18,6 +18,8 @@ abstract class FrontendBuilderExtension {
    * Node.js runtime version downloaded and used by the `gradle-node-plugin`.
    *
    * Defaults to `"26.13.1"`.
+   *
+   * @since 1.0.0
    */
   abstract val nodeVersion: Property<String>
 
@@ -25,6 +27,8 @@ abstract class FrontendBuilderExtension {
    * Yarn package manager version used to install dependencies and execute scripts.
    *
    * Defaults to `"1.22.22"`.
+   *
+   * @since 1.0.0
    */
   abstract val yarnVersion: Property<String>
 
@@ -33,6 +37,8 @@ abstract class FrontendBuilderExtension {
    * on globally installed system versions.
    *
    * Defaults to `true`.
+   *
+   * @since 1.0.0
    */
   abstract val downloadNode: Property<Boolean>
 
@@ -41,6 +47,8 @@ abstract class FrontendBuilderExtension {
    * an artifact.
    *
    * Defaults to `"dist"`.
+   *
+   * @since 1.0.0
    */
   abstract val buildDirName: Property<String>
 
@@ -48,6 +56,8 @@ abstract class FrontendBuilderExtension {
    * Yarn script name executed by the `yarnDev` task to start the local development server.
    *
    * Defaults to `"dev"`.
+   *
+   * @since 1.0.0
    */
   abstract val devScript: Property<String>
 
@@ -55,6 +65,8 @@ abstract class FrontendBuilderExtension {
    * Yarn script name executed by the `buildWeb` task to compile the production frontend bundle.
    *
    * Defaults to `"build"`.
+   *
+   * @since 1.0.0
    */
   abstract val buildScript: Property<String>
 
@@ -62,18 +74,23 @@ abstract class FrontendBuilderExtension {
    * List of project configuration files tracked as Gradle task inputs for incremental builds of `buildWeb`.
    *
    * Defaults to `["package.json", "tsconfig.json", "vite.config.ts", "yarn.lock"]`.
+   *
+   * @since 1.0.0
    */
   abstract val inputFiles: ListProperty<String>
 
   /**
-   * Additional files or directories tracked as task inputs for incremental builds of `buildWeb`
-   * (e.g. `"public"`, `".env.production"`).
+   * Additional files or directories tracked as task inputs for incremental builds of `buildWeb` (e.g. `"public"`,
+   * `".env.production"`).
+   *
+   * @since 1.0.0
    */
   abstract val additionalInputs: ConfigurableFileCollection
 
   /**
-   * Additional files or directories removed when running the `clean` task alongside [buildDirName]
-   * (e.g. `".vite"`).
+   * Additional files or directories removed when running the `clean` task alongside [buildDirName] (e.g. `".vite"`).
+   *
+   * @since 1.0.0
    */
   abstract val additionalDeletes: ConfigurableFileCollection
 

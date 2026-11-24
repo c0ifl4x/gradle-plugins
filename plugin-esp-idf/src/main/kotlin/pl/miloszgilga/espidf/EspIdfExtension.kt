@@ -17,6 +17,8 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    * Target ESP32 chip model used by `idf.py set-target`.
    *
    * Common values: `"esp32"`, `"esp32c3"`, `"esp32c6"`, `"esp32s3"`. Defaults to `"esp32c3"`.
+   *
+   * @since 1.0.0
    */
   abstract val chip: Property<String>
 
@@ -27,6 +29,8 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    * - Windows: `"COM3"`
    * - Linux: `"/dev/ttyACM0"`
    * - macOS: `"/dev/cu.usbmodem101"`
+   *
+   * @since 1.0.0
    */
   abstract val port: Property<String>
 
@@ -34,6 +38,8 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    * Serial baud rate used during flashing operations (`flashFirmware`, `flashAppOnly`).
    *
    * Defaults to `"921600"`.
+   *
+   * @since 1.0.0
    */
   abstract val baud: Property<String>
 
@@ -44,6 +50,8 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    * 1. `IDF_PATH` environment variable
    * 2. `idf_path` environment variable
    * 3. Default OS installation path (C:\Espressif\frameworks\esp-idf on Windows, ~/esp/esp-idf on Unix)
+   *
+   * @since 1.0.0
    */
   abstract val idfPath: Property<String>
 
@@ -51,6 +59,8 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    * Firmware application version passed to CMake via `-DCMD_APP_VER` and to Doxygen via `VER`.
    *
    * Defaults to `project.version` if specified, otherwise `"0.0.1-local-dev"`.
+   *
+   * @since 1.0.0
    */
   abstract val appVersion: Property<String>
 
@@ -59,6 +69,8 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    * configuration.
    *
    * Defaults to `"${project.name}.bin"`.
+   *
+   * @since 1.0.0
    */
   abstract val binaryName: Property<String>
 
