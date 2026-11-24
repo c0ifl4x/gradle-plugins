@@ -1,6 +1,7 @@
 package pl.miloszgilga.espidf
 
 import org.gradle.api.Project
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
 import javax.inject.Inject
 
@@ -73,6 +74,16 @@ abstract class EspIdfExtension @Inject constructor(project: Project) {
    * @since 1.0.0
    */
   abstract val binaryName: Property<String>
+
+  /**
+   * Collection of external component directories passed to CMake via `-DEXTRA_COMPONENT_DIRS`.
+   *
+   * Automatically populated with project artifacts resolved from the `espComponents` Gradle configuration, and can be
+   * extended manually with additional local directories.
+   *
+   * @since 3.1.5
+   */
+  abstract val extraComponentDirs: ConfigurableFileCollection
 
   internal val platform = PlatformStrategyFactory.detect()
 

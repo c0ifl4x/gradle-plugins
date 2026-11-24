@@ -17,6 +17,13 @@ gradlePlugin {
       description = "Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS)"
       tags.set(listOf("esp32", "esp-idf", "embedded", "firmware", "c"))
     }
+    create("espIdfComponents") {
+      id = "pl.miloszgilga.gradle.esp-idf-components"
+      implementationClass = "pl.miloszgilga.espidf.EspIdfComponentsPlugin"
+      displayName = "ESP-IDF Components Gradle Plugin"
+      description = "Exports shared C/C++ ESP-IDF components as a consumable Gradle module artifact"
+      tags.set(listOf("esp32", "esp-idf", "embedded", "components", "c"))
+    }
   }
 }
 

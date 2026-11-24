@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
 
@@ -22,6 +23,15 @@ class EspIdfPlugin : Plugin<Project> {
     project.plugins.apply(BasePlugin::class.java)
     val ext = project.extensions.create<EspIdfExtension>("espIdf", project)
 
+    val incomingComponents = project.configurations.create(EspComponentsContract.CONFIGURATION_NAME) {
+      isCanBeConsumed = false
+      isCanBeResolved = true
+    }
+    EspComponentsContract.applyAttributes(incomingComponents, project.objects)
+    ext.extraComponentDirs.from(incomingComponents)
+
+    val extraDirsFlag = createExtraDirsFlag(ext)
+
     registerIdfTask(
       project,
       ext,
@@ -33,15 +43,19 @@ class EspIdfPlugin : Plugin<Project> {
       project,
       ext,
       taskName = "setChip",
-      taskDescription = "Sets the compilation target to esp32c3",
-      commandProvider = ext.chip.map { targetChip -> "idf.py set-target $targetChip" }
+      taskDescription = "Sets the compilation target",
+      commandProvider = ext.chip.zip(extraDirsFlag) { targetChip, extraFlag ->
+        "idf.py$extraFlag set-target $targetChip"
+      }
     )
     val buildFirmware = registerIdfTask(
       project,
       ext,
       taskName = "buildFirmware",
       taskDescription = "Builds the full firmware (bootloader, partition table, and application)",
-      commandProvider = ext.appVersion.map { ver -> "idf.py build -DCMD_APP_VER=\"$ver\"" }
+      commandProvider = ext.appVersion.zip(extraDirsFlag) { ver, extraFlag ->
+        "idf.py$extraFlag build -DCMD_APP_VER=\"$ver\""
+      }
     ).apply {
       configure {
         inputs.files(project.fileTree(project.projectDir) {
@@ -49,6 +63,13 @@ class EspIdfPlugin : Plugin<Project> {
           include("**/CMakeLists.txt", "sdkconfig*", "partitions*.csv")
           exclude("build/**", ".gradle/**")
         })
+        inputs.files(
+          ext.extraComponentDirs.asFileTree.matching {
+            exclude("build/**", ".gradle/**")
+          }
+        )
+          .withPropertyName("extraComponentDirs")
+          .withPathSensitivity(PathSensitivity.RELATIVE)
         inputs.property("version", ext.appVersion)
         inputs.property("chip", ext.chip)
         outputs.dir(project.layout.projectDirectory.dir("build"))
@@ -59,15 +80,17 @@ class EspIdfPlugin : Plugin<Project> {
       ext,
       taskName = "buildAppOnly",
       taskDescription = "Builds only the application binary (skips bootloader and partition images)",
-      commandProvider = ext.appVersion.map { ver -> "idf.py app -DCMD_APP_VER=\"$ver\"" }
+      commandProvider = ext.appVersion.zip(extraDirsFlag) { ver, extraFlag ->
+        "idf.py$extraFlag app -DCMD_APP_VER=\"$ver\""
+      }
     )
     registerIdfTask(
       project,
       ext,
       taskName = "rebuildFirmware",
       taskDescription = "Forces CMake reconfiguration and performs a full firmware rebuild",
-      commandProvider = ext.appVersion.map { ver ->
-        "idf.py reconfigure && idf.py build -DCMD_APP_VER=\"$ver\""
+      commandProvider = ext.appVersion.zip(extraDirsFlag) { ver, extraFlag ->
+        "idf.py$extraFlag reconfigure && idf.py$extraFlag build -DCMD_APP_VER=\"$ver\""
       }
     )
     registerIdfTask(
@@ -159,6 +182,16 @@ class EspIdfPlugin : Plugin<Project> {
       }) {
         builtBy(buildFirmware)
       }
+    }
+  }
+
+  private fun createExtraDirsFlag(ext: EspIdfExtension): Provider<String> {
+    return ext.extraComponentDirs.elements.map { locations ->
+      val dirs = locations
+        .map { it.asFile }
+        .filter { it.exists() }
+        .map { it.absolutePath.replace('\\', '/') }
+      if (dirs.isEmpty()) "" else " -DEXTRA_COMPONENT_DIRS=\"${dirs.joinToString(";")}\""
     }
   }
 
