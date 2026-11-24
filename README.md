@@ -54,7 +54,7 @@ Apply the plugin and customize the `espIdf` extension in your firmware project's
 
 ```kotlin
 plugins {
-  id("pl.miloszgilga.gradle.espidf") version "X.X.X"
+  id("pl.miloszgilga.gradle.espidf") version "X.Y.Z"
 }
 
 espIdf {
