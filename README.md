@@ -7,17 +7,19 @@ automation in my Gradle monorepo projects.
 
 - [Available plugins](#available-plugins)
 - [Usage](#usage)
-  - [Add plugins repository](#add-plugins-repository)
-  - [Usage of `plugin-esp-idf`](#usage-of-plugin-esp-idf)
+    - [Add plugins repository](#add-plugins-repository)
+    - [Usage of `plugin-esp-idf`](#usage-of-plugin-esp-idf)
+    - [Usage of `plugin-webembed`](#usage-of-plugin-web-embed)
 - [Contributing](#contributing)
 - [Author](#author)
 - [License](#license)
 
 ## Available plugins
 
-| Module | Plugin ID | Description | Docs | Repository |
-| :--- | :--- | :--- | :--- | :--- |
-| `plugin-esp-idf` | `pl.miloszgilga.gradle.espidf` | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-esp-idf/latest) | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-esp-idf) |
+| Module            | Plugin ID                                                                    | Description                                                                          | Docs                                                                                               | Repository                                                                               |
+|:------------------|:-----------------------------------------------------------------------------|:-------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------|
+| `plugin-esp-idf`  | `pl.miloszgilga.gradle.espidf`                                               | Cross-platform Gradle wrapper for ESP-IDF firmware projects (Windows, Linux, macOS). | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-esp-idf/latest)  | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-esp-idf)  |
+| `plugin-webembed` | `pl.miloszgilga.gradle.frontend-builder`<br>`pl.miloszgilga.gradle.webembed` | Builds frontend assets via Node/Yarn and embeds them into JVM server resources.      | [Javadoc](https://m2.miloszgilga.pl/javadoc/releases/pl/miloszgilga/gradle/plugin-webembed/latest) | [Reposilite](https://m2.miloszgilga.pl/#/releases/pl/miloszgilga/gradle/plugin-webembed) |
 
 ## Usage
 
@@ -79,6 +81,90 @@ espIdf {
 | `eraseFlash`      | Erases the entire flash memory on the chip (including NVS and other partitions). |
 | `cleanFirmware`   | Cleans build output files (`idf.py fullclean`).                                  |
 | `generateDocs`    | Generates project documentation using Doxygen.                                   |
+
+### Usage of `plugin-web-embed`
+
+This module provides two complementary plugins designed for monorepo setups where a JVM backend embeds a compiled
+Node/Yarn frontend application (such as Svelte, React, or Vite):
+
+- `pl.miloszgilga.gradle.frontend-builder` - manages Node.js/Yarn toolchains, runs dev/build scripts, and exposes the
+  compiled output directory via the `webResources` Gradle configuration,
+- `pl.miloszgilga.gradle.web-embed` - resolves the `webResources` artifact from a frontend module and packages it into
+  the JVM classpath resources during `processResources`.
+
+#### Project structure
+
+By default, `web-embed` automatically detects and wires a sibling `:ui` subproject under the same parent module:
+
+```text
+monorepo-root/
+├── my-service/
+│   ├── server/   # applies pl.miloszgilga.gradle.webembed
+│   └── ui/       # applies pl.miloszgilga.gradle.frontend-builder
+└── settings.gradle.kts
+```
+
+#### Frontend configuration
+
+Apply `pl.miloszgilga.gradle.frontend-builder` and optionally customize the `frontendBuilder` extension:
+
+```kotlin
+plugins {
+  id("pl.miloszgilga.gradle.frontend-builder") version "X.Y.Z"
+}
+
+frontendBuilder {
+  nodeVersion.set("26.13.1") // default: "26.13.1"
+  yarnVersion.set("1.22.22") // default: "1.22.22"
+  downloadNode.set(true) // default: true
+  buildDirName.set("dist") // default: "dist" (for standard Vite setups)
+  devScript.set("dev") // default: "dev"
+  buildScript.set("build") // default: "build"
+  inputFiles.set(listOf("package.json", "tsconfig.json", "vite.config.ts", "yarn.lock"))
+  additionalInputs.from("public") // optional extra files or directories tracked by buildWeb
+  additionalDeletes.from(".vite") // optional extra files or directories removed during clean
+}
+```
+
+#### Backend configuration
+
+Apply `pl.miloszgilga.gradle.webembed` alongside any JVM plugin (`java`, `application`, `org.jetbrains.kotlin.jvm`,
+etc.). If a sibling `:ui` project exists, zero configuration is required:
+
+```kotlin
+plugins {
+  application
+  id("pl.miloszgilga.gradle.web-embed") version "X.Y.Z"
+}
+
+// Optional customization:
+webEmbed {
+  uiProject.set(":my-service:ui") // optional: overrides automatic sibling :ui resolution
+  targetDir.set("webapp") // default: "webapp" (maps to src/main/resources/webapp)
+  autoWireSiblingUi.set(true) // default: true
+  skip.set(false) // default: false (can also be toggled via -PskipWebEmbed)
+}
+```
+
+#### Skipping frontend build
+
+During local development when running the backend and UI dev server separately (`yarnDev`), you can skip building and
+bundling frontend assets by passing the `-PskipWebEmbed` project property:
+
+```bash
+./gradlew :my-service:server:run -PskipWebEmbed
+```
+
+When active, `uiResources` is excluded from the task execution graph, so `yarnInstall` and `buildWeb` are not triggered.
+
+#### Available tasks
+
+| Task          | Plugin             | Description                                                           |
+|:--------------|:-------------------|-----------------------------------------------------------------------|
+| `yarnInstall` | `frontend-builder` | Installs frontend dependencies via Yarn.                              |
+| `yarnDev`     | `frontend-builder` | Starts the local frontend development server (`yarn run dev`).        |
+| `buildWeb`    | `frontend-builder` | Compiles the production frontend bundle and publishes `webResources`. |
+| `clean`       | `frontend-builder` | Removes the generated build directory and optional cache (if absent). |
 
 ## Contributing
 

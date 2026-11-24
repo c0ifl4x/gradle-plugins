@@ -1,0 +1,35 @@
+name: Publish webembed-plugin
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths:
+      - 'plugin-web-embed/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
+      - '.github/workflows/web-embed-plugin.yml'
+      - '.github/workflows/_reusable-plugin-ci.yml'
+    tags:
+      - 'web-embed-v*'
+  pull_request:
+    branches:
+      - 'master'
+    paths:
+      - 'plugin-web-embed/**'
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - 'gradle/libs.versions.toml'
+      - '.github/workflows/web-embed-plugin.yml'
+      - '.github/workflows/_reusable-plugin-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/_reusable-plugin-ci.yml
+    with:
+      module: plugin-web-embed
+    secrets: inherit

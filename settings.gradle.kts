@@ -10,4 +10,4 @@ dependencyResolutionManagement {
 }
 
 include("plugin-esp-idf")
-include("plugin-webembed")
+include("plugin-web-embed")
