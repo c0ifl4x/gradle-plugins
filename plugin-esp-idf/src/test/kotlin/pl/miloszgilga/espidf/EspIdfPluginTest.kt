@@ -19,6 +19,8 @@ class EspIdfPluginTest {
       "rebuildFirmware",
       "flashFirmware",
       "flashAppOnly",
+      "monitorFirmware",
+      "runFirmware",
       "eraseFlash",
       "cleanFirmware",
       "generateDocs"
