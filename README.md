@@ -136,6 +136,12 @@ Node/Yarn frontend application (such as Svelte, React, or Vite):
 - `pl.miloszgilga.gradle.web-embed` - resolves the `webResources` artifact from a frontend module and packages it into
   the JVM classpath resources during `processResources`.
 
+> [!TIP]
+> Because `web-embed` hooks directly into Gradle's standard `processResources` task, packaging plugins such as
+> `shadowJar` or `jib` (`jibDockerBuild`) automatically trigger the frontend build (`yarnInstall` -> `buildWeb`) and
+> bundle the compiled assets into the target classpath directory without requiring manual task dependencies. Thanks to
+> Gradle's incremental build caching, modifying only backend code skips rebuilding the frontend (`UP-TO-DATE`).
+
 #### Project structure
 
 By default, `web-embed` automatically detects and wires a sibling `:ui` subproject under the same parent module:
